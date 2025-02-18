@@ -1,5 +1,6 @@
 FROM python:3.8-slim
 WORKDIR /app
-COPY producer.py .
+COPY consumer.py .
+COPY save_messages.py .
 RUN pip install kafka-python
-CMD ["python", "producer.py"]
+CMD ["python", "consumer.py"]
