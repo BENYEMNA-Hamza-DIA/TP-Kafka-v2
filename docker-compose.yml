@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_NODE_ID: 1
+      KAFKA_KRAFT_BROKER_METADATA_VERSION: "3.4"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+  producer:
+    build: ./producer
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKER: "kafka:9092"
+    command: ["python", "producer.py"]
+
+  consumer:
+    build: ./consumer
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKER: "kafka:9092"
+    command: ["python", "consumer.py"]
+
+volumes:
+  kafka-data:
