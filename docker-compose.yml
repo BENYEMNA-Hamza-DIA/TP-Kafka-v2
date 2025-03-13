@@ -1,39 +1,111 @@
-version: '3.8'
 
 services:
-  kafka:
-    image: confluentinc/cp-kafka:latest
-    container_name: kafka
-    ports:
-      - "9092:9092"
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.9.0
+    container_name: zookeeper
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka_network
+
+  kafka1:
+    image: confluentinc/cp-kafka:7.9.0
+    container_name: kafka1
+    restart: always
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_LISTENERS: PLAINTEXT://:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LOG_DIRS: /var/lib/kafka/data
-      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
-      KAFKA_PROCESS_ROLES: "broker,controller"
-      KAFKA_NODE_ID: 1
-      KAFKA_KRAFT_BROKER_METADATA_VERSION: "3.4"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+    networks:
+      - kafka_network
+    ports:
+      - "9092:9092"
+
+  kafka2:
+    image: confluentinc/cp-kafka:7.9.0
+    container_name: kafka2
+    restart: always
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+    networks:
+      - kafka_network
+    ports:
+      - "9093:9093"
+
+  kafka3:
+    image: confluentinc/cp-kafka:7.9.0
+    container_name: kafka3
+    restart: always
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9094
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+    networks:
+      - kafka_network
+    ports:
+      - "9094:9094"
+
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:latest
+    container_name: kafka-exporter
+    restart: always
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    command:
+      - "--kafka.server=kafka1:9092"
+      - "--kafka.server=kafka2:9093"
+      - "--kafka.server=kafka3:9094"
+      - "--group.filter=.*"
+      - "--topic.filter=.*"
+      - "--offset.show-all"
+    networks:
+      - kafka_network
+    ports:
+      - "9308:9308"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
     volumes:
-      - kafka-data:/var/lib/kafka/data
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - kafka_network
+    ports:
+      - "9090:9090"
 
-  producer:
-    build: ./producer
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
     depends_on:
-      - kafka
-    environment:
-      KAFKA_BROKER: "kafka:9092"
-    command: ["python", "producer.py"]
+      - prometheus
+    networks:
+      - kafka_network
+    ports:
+      - "3000:3000"
 
-  consumer:
-    build: ./consumer
-    depends_on:
-      - kafka
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    networks:
+      - kafka_network
+    ports:
+      - "8080:8080"
     environment:
-      KAFKA_BROKER: "kafka:9092"
-    command: ["python", "consumer.py"]
+      KAFKA_CLUSTERS_0_NAME: "kafka-cluster"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka1:9092,kafka2:9093,kafka3:9094"
+      KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
 
-volumes:
-  kafka-data:
+networks:
+  kafka_network:
+    driver: bridge
