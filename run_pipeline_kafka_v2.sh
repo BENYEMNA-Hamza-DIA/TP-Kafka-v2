@@ -22,12 +22,15 @@ sleep 5
 echo "📥 [INFO] Récupération des messages consommés..."
 bash consume_messages_auto.sh
 
+echo "🔄 [INFO] Vérification et rebalancement des partitions..."
+bash rebalance_partitions.sh
+
 echo "✅ [INFO] Pipeline Kafka terminé avec succès !"
 
-echo "[INFO] Arret des conteneurs !"
-docker-compose down
+#echo "[INFO] Arret des conteneurs !"
+#docker-compose down
 
-echo "[INFO] Suppression des données !"
-docker volume prune -f
+#echo "[INFO] Suppression des données !"
+#docker volume prune -f
 
 
