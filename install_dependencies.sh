@@ -47,7 +47,10 @@ chmod +x *.sh
 # 🔹 Firewall : Ouverture des ports si UFW est actif
 if sudo ufw status | grep -q "active"; then
     echo "🔓 [INFO] Ouverture des ports nécessaires..."
-    sudo ufw allow 9092/tcp   # Kafka
+    sudo ufw allow 9092/tcp   # HAProxy
+    sudo ufw allow 9095/tcp   # Kafka1
+    sudo ufw allow 9093/tcp   # Kafka2
+    sudo ufw allow 9094/tcp   # Kafka3
     sudo ufw allow 2181/tcp   # Zookeeper
     sudo ufw allow 3000/tcp   # Grafana
     sudo ufw allow 9090/tcp   # Prometheus
