@@ -108,7 +108,7 @@ resource "google_compute_instance" "kafka_vm" {
 
 
     # 🔹 Lancer le deploiement Kafka
-    ./run_pipeline_kafka_v2.sh
+     bash run_pipeline_kafka_v2.sh
 }
 
 
