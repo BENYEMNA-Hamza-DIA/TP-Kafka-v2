@@ -1,10 +1,10 @@
 variable "google_credentials" {
-  description = "~/.gcp/mon-projet-kafka-67a4138ff6c2.json"
+  description = "Path to the GCP credentials JSON file"
   type        = string
 }
 
 variable "gcp_project" {
-  description = "mon-projet-kafka"
+  description = "GCP Project ID"
   type        = string
 }
 
@@ -30,7 +30,6 @@ variable "machine_type" {
   description = "Machine type for the VM"
   type        = string
   default     = "e2-medium"
-  # 2vCPU - 4Go of RAM
 }
 
 variable "os_image" {
