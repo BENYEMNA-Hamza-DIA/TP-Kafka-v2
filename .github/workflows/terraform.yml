@@ -29,6 +29,9 @@ jobs:
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+      
+      - name: Change to Terraform directory
+        run: cd terraform
 
       - name: Terraform Init
         run: terraform init
@@ -38,4 +41,4 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        
+
