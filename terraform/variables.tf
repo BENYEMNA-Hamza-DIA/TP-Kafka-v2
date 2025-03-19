@@ -1,7 +1,7 @@
-#variable "google_credentials" {
-#  description = "Path to the GCP credentials JSON file"
-#  type        = string
-#}
+variable "google_credentials" {
+  description = "Path to the GCP credentials JSON file"
+  type        = string
+}
 
 variable "gcp_project" {
   description = "GCP Project ID"

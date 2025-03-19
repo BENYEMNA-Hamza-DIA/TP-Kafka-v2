@@ -1,4 +1,4 @@
-#google_credentials = "~/.gcp/terraform-key.json"
+google_credentials = "~/.gcp/terraform-key.json"
 gcp_project       = "ws-apparchi-tp-kafka"
 gcp_region        = "europe-west9"
 gcp_zone          = "europe-west9-a"
