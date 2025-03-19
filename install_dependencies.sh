@@ -45,18 +45,18 @@ echo "🔑 [INFO] Rendre tous les scripts exécutables..."
 chmod +x *.sh
 
 # 🔹 Firewall : Ouverture des ports si UFW est actif
-if sudo ufw status | grep -q "active"; then
-    echo "🔓 [INFO] Ouverture des ports nécessaires..."
-    sudo ufw allow 9092/tcp   # HAProxy
-    sudo ufw allow 9095/tcp   # Kafka1
-    sudo ufw allow 9093/tcp   # Kafka2
-    sudo ufw allow 9094/tcp   # Kafka3
-    sudo ufw allow 2181/tcp   # Zookeeper
-    sudo ufw allow 3000/tcp   # Grafana
-    sudo ufw allow 9090/tcp   # Prometheus
-    sudo ufw allow 8080/tcp   # Kafka UI
-    sudo ufw allow 9308/tcp   # Kafka Exporter
-    sudo ufw reload
-fi
+#if sudo ufw status | grep -q "active"; then
+#    echo "🔓 [INFO] Ouverture des ports nécessaires..."
+#    sudo ufw allow 9092/tcp   # HAProxy
+#    sudo ufw allow 9095/tcp   # Kafka1
+#    sudo ufw allow 9093/tcp   # Kafka2
+#    sudo ufw allow 9094/tcp   # Kafka3
+#    sudo ufw allow 2181/tcp   # Zookeeper
+#    sudo ufw allow 3000/tcp   # Grafana
+#    sudo ufw allow 9090/tcp   # Prometheus
+#    sudo ufw allow 8080/tcp   # Kafka UI
+#    sudo ufw allow 9308/tcp   # Kafka Exporter
+#    sudo ufw reload
+#fi
 
 echo "✅ [INFO] Installation terminée avec succès ! Vous pouvez maintenant exécuter votre pipeline Kafka."
