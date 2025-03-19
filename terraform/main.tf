@@ -46,15 +46,17 @@ resource "google_compute_instance" "kafka_vm" {
     echo "🚀 [INFO] Démarrage de l'installation et du pipeline Kafka"
     
     sudo apt update && sudo apt upgrade -y
+
     sudo apt install -y git
-    
-    cd /home/
+
     git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git
+
     cd TP-Kafka-v2
     
     chmod +x *.sh
-    ./installation_dependencies.sh
-    ./run_pipeline_kafka_v2.sh
+    
+    sudo bash installation_dependencies.sh
+    sudo bash run_pipeline_kafka_v2.sh
     
     echo "✅ [INFO] Déploiement terminé"
   EOT

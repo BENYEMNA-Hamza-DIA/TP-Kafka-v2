@@ -43,3 +43,13 @@ jobs:
 
       - name: Terraform Apply
         run: terraform -chdir=terraform apply -auto-approve tfplan
+
+      - name: Run scripts on the VM
+        run: |
+          gcloud compute ssh kafka-instance --zone=europe-west9-a --command "
+          sudo apt update && sudo apt upgrade &&
+          sudo apt install git &&
+          git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git &&
+          sudo chmod +x /home/hamzabenyemna/TP-Kafka-v2/*.sh &&
+          sudo /home/hamzabenyemna/TP-Kafka-v2/installation_dependencies.sh &&
+          sudo /home/hamzabenyemna/TP-Kafka-v2/run_pipeline_kafka_v2.sh"
