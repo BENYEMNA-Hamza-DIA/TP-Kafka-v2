@@ -1,4 +1,4 @@
-google_credentials = "~/.gcp/mon-projet-kafka-67a4138ff6c2.json"
+#google_credentials = "~/.gcp/mon-projet-kafka-67a4138ff6c2.json"
 gcp_project       = "mon-projet-kafka"
 gcp_region        = "europe-west9"
 gcp_zone          = "europe-west9-a"
