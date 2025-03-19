@@ -20,6 +20,12 @@ jobs:
       - name: Create GCP credentials file
         run: echo '${{ secrets.GCP_CREDENTIALS }}' > terraform/gcp-key.json
 
+      - name: Vérifier que le fichier JSON existe
+        run: ls -la terraform/
+
+      - name: Wait for JSON file creation
+        run: sleep 5
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -32,12 +38,6 @@ jobs:
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-
-      - name: Debug - List Files
-        run: ls -R
-
-      - name: Change to Terraform directory
-        run: cd terraform && ls -la
 
       - name: Terraform Init
         run: terraform -chdir=terraform init
