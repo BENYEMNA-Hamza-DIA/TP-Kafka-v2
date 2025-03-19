@@ -111,3 +111,19 @@ output "instance_ip" {
   value       = google_compute_instance.kafka_vm.network_interface[0].access_config[0].nat_ip
   description = "Public IP of the Kafka VM"
 }
+
+# =============================
+# OUTPUT VM PUBLIC IP
+# =============================
+output "instance_ip" {
+  value       = google_compute_instance.kafka_vm.network_interface[0].access_config[0].nat_ip
+  description = "Public IP of the Kafka VM"
+}
+
+# =============================
+# OUTPUT SSH CONNECTION STRING
+# =============================
+output "ssh_connection" {
+  value       = "gcloud compute ssh ${google_compute_instance.kafka_vm.name} --zone=${var.gcp_zone}"
+  description = "Command to SSH into the Kafka VM"
+}
