@@ -17,14 +17,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Create GCP credentials file
-        run: echo '${{ secrets.GCP_CREDENTIALS }}' > terraform/gcp-key.json
-
-      - name: Vérifier que le fichier JSON existe
-        run: ls -la terraform/
-
-      - name: Wait for JSON file creation
-        run: sleep 5
+      - name: Set GCP credentials environment variable
+        run: echo '${{ secrets.GCP_CREDENTIALS }}' > $HOME/gcp-key.json
+      - name: Export GOOGLE_APPLICATION_CREDENTIALS
+        run: echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json" >> $GITHUB_ENV
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
