@@ -13,6 +13,19 @@ provider "google" {
   region      = var.gcp_region
 }
 
+resource "google_compute_firewall" "allow_kafka_services" {
+  name    = "allow-kafka-services"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = var.allowed_ports
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+}
+
+
 resource "google_compute_instance" "kafka_vm" {
   name         = var.vm_name
   machine_type = var.machine_type
@@ -65,16 +78,16 @@ resource "google_compute_instance" "kafka_vm" {
     docker --version
     java -version
 
+
     # 🔹 Cloner le repo contenant les scripts Kafka
     cd /home/
     git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git
     cd TP-Kafka-v2
 
+
     # 🔹 Rendre tous les scripts exécutables
     chmod +x *.sh
 
-    # 🔹 Lancer le deploiement Kafka
-    ./run_pipeline_kafka_v2.sh
 
     # 🔹 Firewall : Ouverture des ports si UFW est actif
     if sudo ufw status | grep -q "active"; then
@@ -92,19 +105,10 @@ resource "google_compute_instance" "kafka_vm" {
 
     echo "✅ [INFO] Installation terminée avec succès ! Vous pouvez maintenant exécuter votre pipeline Kafka."
   EOT
-  
-}
 
-resource "google_compute_firewall" "allow_kafka_services" {
-  name    = "allow-kafka-services"
-  network = "default"
 
-  allow {
-    protocol = "tcp"
-    ports    = var.allowed_ports
-  }
-
-  source_ranges = ["0.0.0.0/0"]
+    # 🔹 Lancer le deploiement Kafka
+    ./run_pipeline_kafka_v2.sh
 }
 
 
