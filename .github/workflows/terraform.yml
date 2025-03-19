@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create GCP credentials file
-        run: echo '${{ secrets.GCP_CREDENTIALS }}' | base64 --decode > terraform/gcp-key.json
+        run: echo '${{ secrets.GCP_CREDENTIALS }}' > terraform/gcp-key.json
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
