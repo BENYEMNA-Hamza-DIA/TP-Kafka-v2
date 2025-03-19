@@ -41,27 +41,6 @@ resource "google_compute_instance" "kafka_vm" {
     access_config {}
   }
 
-  metadata_startup_script = <<-EOT
-    #!/bin/bash
-    echo "🚀 [INFO] Démarrage de l'installation et du pipeline Kafka"
-    
-    sudo apt update && sudo apt upgrade -y
-
-    sudo apt install -y git
-
-    git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git
-
-    cd TP-Kafka-v2
-    
-    chmod +x *.sh
-    
-    sudo bash installation_dependencies.sh
-    sudo bash run_pipeline_kafka_v2.sh
-    
-    echo "✅ [INFO] Déploiement terminé"
-  EOT
-}
-
 output "instance_ip" {
   value       = google_compute_instance.kafka_vm.network_interface[0].access_config[0].nat_ip
   description = "Public IP of the Kafka VM"
