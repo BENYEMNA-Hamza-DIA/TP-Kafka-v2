@@ -18,15 +18,13 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
-      KAFKA_AUTO_LEADER_REBALANCE_ENABLE: "true"
-      KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: "true"
-      KAFKA_MIN_INSYNC_REPLICAS: 2
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9095
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9095
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
     networks:
       - kafka_network
     ports:
-      - "9092:9092"
+      - "9095:9095"
 
   kafka2:
     image: confluentinc/cp-kafka:7.9.0
@@ -36,7 +34,8 @@ services:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
     networks:
       - kafka_network
     ports:
@@ -50,22 +49,23 @@ services:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9094
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9094
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
     networks:
       - kafka_network
     ports:
       - "9094:9094"
 
-  kafka-gateway:
-    image: haproxy
-    container_name: kafka-gateway
+  haproxy:
+    image: haproxy:latest
+    container_name: kafka-lb
     restart: always
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     networks:
       - kafka_network
     ports:
       - "9092:9092"
-    volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
 
   kafka-exporter:
     image: danielqsj/kafka-exporter:latest
@@ -76,7 +76,7 @@ services:
       - kafka2
       - kafka3
     command:
-      - "--kafka.server=kafka1:9092"
+      - "--kafka.server=kafka1:9095"
       - "--kafka.server=kafka2:9093"
       - "--kafka.server=kafka3:9094"
     networks:
@@ -115,7 +115,7 @@ services:
       - "8080:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: "kafka-cluster"
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka-gateway:9092"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka-lb:9092"
       KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
 
 networks:

@@ -11,19 +11,29 @@ echo "👥 [INFO] Création des Consumer Groups..."
 bash create_consumers.sh
 
 # 🔹 Lancer la production automatique de messages
-echo "🚀 [INFO] Lancement de la production automatique de messages..."
+echo "🚀 [INFO] Lancement de la production automatique de messages... (1/2)"
+bash produce_messages_auto.sh
+sleep 5
+
+# Test de failover
+echo "❗⚠️ [INFO] On simule une panne en arretant le noeud actif kafka1"
+docker-compose stop kafka1
+sleep 5
+
+echo "✅ Les consumers actifs seront basculés vers un autre noeud disponible"
+sleep 5
+
+# 🔹 Lancer la production automatique de messages
+echo "🚀 [INFO] Lancement de la production automatique de messages après fail over... (2/2)"
 bash produce_messages_auto.sh
 
-# 🔹 Attente de la fin de la production
-echo "⏳ [INFO] Attente de la fin de la production des messages..."
+echo "Attente de la fin de consommation des messages"
 sleep 5
+
 
 # 🔹 Récupération des messages consommés
 echo "📥 [INFO] Récupération des messages consommés..."
 bash consume_messages_auto.sh
-
-echo "🔄 [INFO] Vérification et rebalancement des partitions..."
-bash rebalance_partitions.sh
 
 echo "✅ [INFO] Pipeline Kafka terminé avec succès !"
 

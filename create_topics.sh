@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TOPICS=("topic1" "topic2" "topic3")
-BOOTSTRAP_SERVER="kafka-gateway:9092"
+BOOTSTRAP_SERVER="kafka-lb:9092"
 
 echo "📌 Création des topics..."
 for topic in "${TOPICS[@]}"; do

@@ -5,7 +5,7 @@ CONSUMERS_GROUPS["topic1"]=1
 CONSUMERS_GROUPS["topic2"]=2
 CONSUMERS_GROUPS["topic3"]=3
 
-BOOTSTRAP_SERVER="kafka-gateway:9092"
+BOOTSTRAP_SERVER="kafka-lb:9092"
 
 echo "👥 [INFO] Création des Consumer Groups..."
 for topic in "${!CONSUMERS_GROUPS[@]}"; do

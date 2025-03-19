@@ -2,9 +2,9 @@
 
 # 🔹 Configuration
 KAFKA_CONTAINER="kafka1"
-BOOTSTRAP_SERVER="kafka1:9092"
+BOOTSTRAP_SERVER="kafka-lb:9092"
 TOPICS=("topic1" "topic2" "topic3")
-DURATION=300  # Durée en secondes (ex: 5 minutes)
+DURATION=150  # Durée en secondes (ex: 5 minutes)
 INTERVAL=5  # Intervalle en secondes entre chaque message
 
 echo "📤 [INFO] Début de la production automatique de messages sur $DURATION secondes..."
