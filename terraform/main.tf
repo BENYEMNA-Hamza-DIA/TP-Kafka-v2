@@ -67,8 +67,8 @@ resource "google_compute_instance" "kafka_vm" {
 
     # 🔹 Cloner le repo contenant les scripts Kafka
     cd /home/
-    git clone https://github.com/your-repo/kafka-project.git
-    cd kafka-project
+    git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git
+    cd TP-Kafka-v2
 
     # 🔹 Rendre tous les scripts exécutables
     chmod +x *.sh
