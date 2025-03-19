@@ -43,74 +43,17 @@ resource "google_compute_instance" "kafka_vm" {
     access_config {}
   }
 
- metadata_startup_script = <<-EOT
-    #!/bin/bash
-    echo "🚀 [INFO] Installation des dépendances pour le déploiement Kafka + Monitoring"
-
-    # 🔹 Mise à jour des paquets
-    sudo apt update && sudo apt upgrade -y
-
-    # 🔹 Installation de Java 17
-    sudo apt install -y openjdk-17-jdk
-    java -version
-
-    # 🔹 Installation de Docker
-    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
-    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt update
-    sudo apt install -y docker-ce docker-ce-cli containerd.io
-
-    # 🔹 Ajout de l'utilisateur courant au groupe Docker
-    sudo usermod -aG docker $USER
-    newgrp docker
-
-    # 🔹 Installation de Docker Compose
-    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-    docker-compose --version
-
-    # 🔹 Activation et démarrage du service Docker
-    sudo systemctl enable docker
-    sudo systemctl start docker
-
-    # 🔹 Vérification des versions installées
-    docker --version
-    java -version
-
-
-    # 🔹 Cloner le repo contenant les scripts Kafka
-    cd /home/
-    git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git
-    cd TP-Kafka-v2
-
-
-    # 🔹 Rendre tous les scripts exécutables
-    chmod +x *.sh
-
-
-    # 🔹 Firewall : Ouverture des ports si UFW est actif
-    if sudo ufw status | grep -q "active"; then
-        sudo ufw allow 9092/tcp   # HAProxy
-        sudo ufw allow 9095/tcp   # Kafka1
-        sudo ufw allow 9093/tcp   # Kafka2
-        sudo ufw allow 9094/tcp   # Kafka3
-        sudo ufw allow 2181/tcp   # Zookeeper
-        sudo ufw allow 3000/tcp   # Grafana
-        sudo ufw allow 9090/tcp   # Prometheus
-        sudo ufw allow 8080/tcp   # Kafka UI
-        sudo ufw allow 9308/tcp   # Kafka Exporter
-        sudo ufw reload
-    fi
-
-    echo "✅ [INFO] Installation terminée avec succès ! Vous pouvez maintenant exécuter votre pipeline Kafka."
-    
-    
-    # 🔹 Lancer le deploiement Kafka
-    bash /home/TP-Kafka-v2/run_pipeline_kafka_v2.sh
-  
-  EOT
-
+   metadata = {
+    user-data = <<-EOT
+      #cloud-config
+      runcmd:
+        - bash install_dependencies.sh
+        - git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git | tee -a /var/log/cloud-init.log
+        - cd TP-Kafka-v2
+        - chmod +x *.sh
+        - bash run_pipeline_kafka_v2.sh
+    EOT
+  }
 }
 
 
