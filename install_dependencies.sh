@@ -6,6 +6,10 @@ echo "🚀 [INFO] Installation des dépendances pour le déploiement Kafka + Mon
 echo "🔄 [INFO] Mise à jour des paquets..."
 sudo apt update && sudo apt upgrade -y
 
+# 🔹 Installation de Git
+#echo "🔄 [INFO] Installation de Git"
+#sudo apt install git
+
 # 🔹 Installation de Java 17
 echo "☕ [INFO] Installation de Java 17..."
 sudo apt install -y openjdk-17-jdk
