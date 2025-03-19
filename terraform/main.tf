@@ -107,11 +107,9 @@ resource "google_compute_instance" "kafka_vm" {
     
     
     # 🔹 Lancer le deploiement Kafka
-    bash run_pipeline_kafka_v2.sh
+    bash /home/TP-Kafka-v2/run_pipeline_kafka_v2.sh
   
   EOT
-
-
 
 }
 
