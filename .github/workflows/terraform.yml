@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
@@ -31,7 +34,8 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
       
       - name: Change to Terraform directory
-        run: cd terraform
+        run: cd terraform && ls -la
+
 
       - name: Terraform Init
         run: terraform init
