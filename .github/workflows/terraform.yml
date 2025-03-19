@@ -16,9 +16,12 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
+      - name: Debug - List Files
+        run: ls -R
+
+      - name: Change to Terraform directory
+        run: cd terraform && ls -la
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
@@ -32,17 +35,12 @@ jobs:
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-      
-      - name: Change to Terraform directory
-        run: cd terraform && ls -la
-
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform -chdir=terraform init
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform -chdir=terraform plan -out=tfplan
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
-
+        run: terraform -chdir=terraform apply -auto-approve tfplan
