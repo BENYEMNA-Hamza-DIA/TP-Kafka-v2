@@ -104,11 +104,15 @@ resource "google_compute_instance" "kafka_vm" {
     fi
 
     echo "✅ [INFO] Installation terminée avec succès ! Vous pouvez maintenant exécuter votre pipeline Kafka."
+    
+    
+    # 🔹 Lancer le deploiement Kafka
+    bash run_pipeline_kafka_v2.sh
+  
   EOT
 
 
-    # 🔹 Lancer le deploiement Kafka
-     bash run_pipeline_kafka_v2.sh
+
 }
 
 
