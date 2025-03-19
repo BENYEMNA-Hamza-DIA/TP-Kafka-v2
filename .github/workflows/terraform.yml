@@ -17,11 +17,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Debug - List Files
-        run: ls -R
-
-      - name: Change to Terraform directory
-        run: cd terraform && ls -la
+      - name: Create GCP credentials file
+        run: echo '${{ secrets.GCP_CREDENTIALS }}' > $HOME/gcp-key.json
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
@@ -35,6 +32,12 @@ jobs:
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+
+      - name: Debug - List Files
+        run: ls -R
+
+      - name: Change to Terraform directory
+        run: cd terraform && ls -la
 
       - name: Terraform Init
         run: terraform -chdir=terraform init
