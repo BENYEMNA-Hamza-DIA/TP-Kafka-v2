@@ -16,18 +16,22 @@ provider "google" {
   region      = "europe-west9"
 }
 
+
 # =============================
 # CREATE A VM INSTANCE IN PARIS REGION
 # =============================
 resource "google_compute_instance" "kafka_vm" {
   name         = "kafka-instance"
-  machine_type = "e2-standard-2"
+  machine_type = "e2-medium" 
+  # 2 vCPU, 4GB RAM
+  
   zone         = "europe-west9-a"
 
   boot_disk {
     initialize_params {
       image = "debian-cloud/debian-12"
-      size  = 100
+      size  = 30  
+      # 30GB Disk Storage
     }
   }
 
