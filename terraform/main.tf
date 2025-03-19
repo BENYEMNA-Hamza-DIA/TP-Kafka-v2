@@ -43,17 +43,6 @@ resource "google_compute_instance" "kafka_vm" {
     access_config {}
   }
 
-   metadata = {
-    user-data = <<-EOT
-      #cloud-config
-      runcmd:
-        - bash install_dependencies.sh
-        - git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git | tee -a /var/log/cloud-init.log
-        - cd TP-Kafka-v2
-        - chmod +x *.sh
-        - bash run_pipeline_kafka_v2.sh
-    EOT
-  }
 }
 
 
