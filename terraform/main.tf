@@ -73,8 +73,8 @@ resource "google_compute_instance" "kafka_vm" {
     # 🔹 Rendre tous les scripts exécutables
     chmod +x *.sh
 
-    # 🔹 Lancer Docker Compose
-    docker-compose up -d
+    # 🔹 Lancer le deploiement Kafka
+    ./run_pipeline_kafka_v2.sh
 
     # 🔹 Firewall : Ouverture des ports si UFW est actif
     if sudo ufw status | grep -q "active"; then
@@ -107,7 +107,19 @@ resource "google_compute_firewall" "allow_kafka_services" {
   source_ranges = ["0.0.0.0/0"]
 }
 
+
+# =============================
+# OUTPUT VM PUBLIC IP
+# =============================
 output "instance_ip" {
   value       = google_compute_instance.kafka_vm.network_interface[0].access_config[0].nat_ip
   description = "Public IP of the Kafka VM"
+}
+
+# =============================
+# OUTPUT SSH CONNECTION STRING
+# =============================
+output "ssh_connection" {
+  value       = "gcloud compute ssh ${google_compute_instance.kafka_vm.name} --zone=${var.gcp_zone}"
+  description = "Command to SSH into the Kafka VM"
 }
