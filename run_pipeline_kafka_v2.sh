@@ -1,11 +1,5 @@
 #!/bin/bash
 
-
-# 🔹 Installation des dependances
-echo "📌 [INFO] Installation des dependances..."
-sudo bash install_dependencies.sh
-
-
 sudo bash start_kafka.sh
 
 
