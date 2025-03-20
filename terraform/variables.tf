@@ -35,7 +35,7 @@ variable "machine_type" {
 variable "os_image" {
   description = "Operating system image"
   type        = string
-  default     = "debian-cloud/debian-12"
+  default     = "ubuntu-os-cloud/ubuntu-2004-lts"
 }
 
 variable "disk_size" {
