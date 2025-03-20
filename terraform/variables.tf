@@ -29,7 +29,7 @@ variable "vm_name" {
 variable "machine_type" {
   description = "Machine type for the VM"
   type        = string
-  default     = "e2-medium"
+  default     = "e2-standard-2"
 }
 
 variable "os_image" {
