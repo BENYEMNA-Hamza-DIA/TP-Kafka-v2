@@ -13,6 +13,23 @@ provider "google" {
   region      = var.gcp_region
 }
 
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "local_file" "private_key" {
+  content  = tls_private_key.ssh_key.private_key_pem
+  filename = "${path.module}/id_rsa"
+  file_permission = "0600"
+}
+
+resource "local_file" "public_key" {
+  content  = tls_private_key.ssh_key.public_key_openssh
+  filename = "${path.module}/id_rsa.pub"
+}
+
+
 resource "google_compute_firewall" "allow_kafka_services" {
   name    = "allow-kafka-services"
   network = "default"
@@ -40,6 +57,26 @@ resource "google_compute_instance" "kafka_vm" {
   network_interface {
     network = "default"
     access_config {}
+  }
+
+  metadata = {
+    ssh-keys = "ubuntu:${tls_private_key.ssh_key.public_key_openssh}"
+    user-data = <<-EOT
+    #cloud-config
+    package_update: true
+    package_upgrade: true
+    packages:
+      - git
+    runcmd:
+      - systemctl enable docker
+      - systemctl start docker
+      - git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git /home/ubuntu/TP-Kafka-v2
+      - chmod +x /home/ubuntu/TP-Kafka-v2/*.sh
+      - /home/ubuntu/TP-Kafka-v2/installation_dependencies.sh
+      - /home/ubuntu/TP-Kafka-v2/run_pipeline_kafka_v2.sh
+
+  EOT
+  
   }
 }
 

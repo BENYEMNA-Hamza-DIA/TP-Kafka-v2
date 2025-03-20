@@ -37,8 +37,8 @@ sleep 5
 
 
 # 🔹 Récupération des messages consommés
-echo "📥 [INFO] Récupération des messages consommés..."
-sudo bash consume_messages_auto.sh
+#echo "📥 [INFO] Récupération des messages consommés..."
+#sudo bash consume_messages_auto.sh
 
 echo "✅ [INFO] Pipeline Kafka terminé avec succès !"
 
