@@ -67,16 +67,13 @@ resource "google_compute_instance" "kafka_vm" {
     package_upgrade: true
     packages:
       - git
+
     runcmd:
-      - systemctl enable docker
-      - systemctl start docker
+      - apt update && apt upgrade -y
       - git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git /home/ubuntu/TP-Kafka-v2
       - chmod +x /home/ubuntu/TP-Kafka-v2/*.sh
-      - /home/ubuntu/TP-Kafka-v2/installation_dependencies.sh
       - /home/ubuntu/TP-Kafka-v2/run_pipeline_kafka_v2.sh
-
-  EOT
-  
+    EOT
   }
 }
 
