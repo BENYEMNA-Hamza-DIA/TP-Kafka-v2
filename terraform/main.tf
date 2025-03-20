@@ -69,10 +69,11 @@ resource "google_compute_instance" "kafka_vm" {
       - git
 
     runcmd:
-      - apt update && apt upgrade -y
-      - git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git /home/ubuntu/TP-Kafka-v2
-      - chmod +x /home/ubuntu/TP-Kafka-v2/*.sh
-      - /home/ubuntu/TP-Kafka-v2/run_pipeline_kafka_v2.sh
+      - sudo apt update && apt upgrade -y
+      - sudo git clone https://github.com/BENYEMNA-Hamza-DIA/TP-Kafka-v2.git
+      - cd  TP-Kafka-v2
+      - sudo chmod +x *.sh
+      - sudo bash run_pipeline_kafka_v2.sh
     EOT
   }
 }
