@@ -35,7 +35,7 @@ jobs:
     - name: Wait 2 minutes before destroying
       run: |
         echo "⏳ Attente de 2 minutes avant suppression..."
-        sleep 120
+        sleep 300
 
     - name: Destroy Terraform resources
       working-directory: ./terraform
