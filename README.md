@@ -46,7 +46,7 @@ Event-Driven Architecture is a software design paradigm in which components of a
 
 ## 📅 Kafka: Core Concepts and Architecture
 
-!\[Kafka Principles]\(images/kafka-schema.gif)
+![Kafka Principles](images/kafka-schema.gif)
 
 Apache Kafka is a distributed event streaming platform that enables real-time ingestion and processing of large volumes of data. It works on a publish-subscribe model and is designed for high throughput and low latency.
 
@@ -68,7 +68,7 @@ Apache Kafka is a distributed event streaming platform that enables real-time in
 
 ### 🏛️ Real-World Use Cases:
 
-!\[Top 5 Kafka Uses Cases]\(images/top-5-kafka-uses.webp)
+![Top 5 Kafka Use Cases](images/top-5-kafka-uses.webp)
 
 * Log aggregation
 * User activity tracking
