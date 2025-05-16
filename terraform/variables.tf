@@ -69,3 +69,9 @@ variable "allowed_ports" {
   type        = list(string)
   default     = ["8080", "9090", "3000", "9092", "9095", "9093", "9094", "2181", "9308"]
 }
+
+
+variable "ssh_pub_key" {
+  description = "Clé publique SSH pour l'accès à la VM"
+  type        = string
+}

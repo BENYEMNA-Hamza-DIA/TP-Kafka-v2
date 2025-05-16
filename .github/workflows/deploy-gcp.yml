@@ -1,37 +1,71 @@
-name: Deploy and Destroy Kafka VM on GCP
+name: Deploy and Configure Kafka GCP VM
 
 on:
   workflow_dispatch:
 
 jobs:
-  deploy_destroy:
+  deploy_configure:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install Ansible
+        run: sudo apt-get update && sudo apt-get install -y ansible
+
+      - name: Generate SSH key for Ansible
+        run: |
+          ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa -N ""
+          cat ~/.ssh/id_rsa.pub > ~/.ssh/ansible_key.pub
+
+      - name: Save public key to variable
+        id: sshkey
+        run: |
+          echo "PUB_KEY<<EOF" >> $GITHUB_ENV
+          cat ~/.ssh/ansible_key.pub >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.11.1
+          terraform_version: 1.5.7
 
-      - name: Apply Terraform
+      - name: Terraform Init & Apply
         working-directory: ./terraform
         run: |
           terraform init
           terraform apply -auto-approve \
-            -var='google_credentials=${{ secrets.GCP_CREDENTIALS }}' \
-            -var='gcp_project=${{ secrets.GCP_PROJECT }}'
+            -var="google_credentials=${{ secrets.GCP_CREDENTIALS }}" \
+            -var="gcp_project=${{ secrets.GCP_PROJECT }}" \
+            -var="ssh_pub_key=${{ env.PUB_KEY }}"
 
-      - name: Wait 2 minutes before destroy
+      - name: Get external IP from Terraform
+        id: get_ip
+        working-directory: ./terraform
         run: |
-          echo "⏳ Attente de 2 minutes avant suppression..."
-          sleep 60
+          echo "VM_IP=$(terraform output -raw instance_ip)" >> $GITHUB_ENV
 
-      - name: Destroy Terraform resources
+      - name: Wait for VM to be ready
+        run: sleep 60
+
+      - name: Configure instance with Ansible
+        run: |
+          echo "[gcp]" > inventory
+          echo "$VM_IP ansible_user=debian ansible_ssh_private_key_file=~/.ssh/id_rsa" >> inventory
+
+          ansible-playbook -i inventory ansible/setup-kafka.yml
+
+      - name: Run Kafka pipeline
+        run: |
+          chmod +x *.sh
+          ./run_pipeline_kafka_v2.sh
+
+      - name: Terraform Destroy
+        if: always()
         working-directory: ./terraform
         run: |
           terraform destroy -auto-approve \
-            -var='google_credentials=${{ secrets.GCP_CREDENTIALS }}' \
-            -var='gcp_project=${{ secrets.GCP_PROJECT }}'
+            -var="google_credentials=${{ secrets.GCP_CREDENTIALS }}" \
+            -var="gcp_project=${{ secrets.GCP_PROJECT }}" \
+            -var="ssh_pub_key=${{ env.PUB_KEY }}"

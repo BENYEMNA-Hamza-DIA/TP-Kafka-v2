@@ -68,6 +68,11 @@ resource "google_compute_instance" "kafka_vm" {
     access_config {}
   }
 
+
+  metadata = {
+    ssh-keys = "debian:${var.ssh_pub_key}"
+  }  
+
 }
 
 

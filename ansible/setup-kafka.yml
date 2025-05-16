@@ -1,0 +1,64 @@
+---
+- name: Setup Kafka VM
+  hosts: all
+  become: true
+  vars:
+    repo_url: "https://gitlab.com/formation-ws-apparchi/kafka-v2.git"
+    repo_dir: "kafka-v2"
+
+  tasks:
+    - name: Update and upgrade packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install dependencies (Java 17, Docker, Docker Compose, Git)
+      apt:
+        name:
+          - openjdk-17-jdk
+          - docker.io
+          - docker-compose
+          - git
+        state: present
+
+    - name: Add user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Enable and start Docker
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Clone Kafka repository
+      git:
+        repo: "{{ repo_url }}"
+        dest: "/home/{{ ansible_user }}/{{ repo_dir }}"
+        version: main
+        force: yes
+
+    - name: Change ownership of repo directory
+      file:
+        path: "/home/{{ ansible_user }}/{{ repo_dir }}"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        recurse: yes
+
+    - name: Make all shell scripts executable
+      file:
+        path: "/home/{{ ansible_user }}/{{ repo_dir }}"
+        recurse: yes
+        state: directory
+        mode: '0755'
+
+    - name: Execute Kafka pipeline script
+      become: false
+      shell: |
+        cd /home/{{ ansible_user }}/{{ repo_dir }}
+        chmod +x *.sh
+        ./run_pipeline_kafka_v2.sh
+      args:
+        executable: /bin/bash
