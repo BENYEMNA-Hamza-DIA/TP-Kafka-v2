@@ -16,28 +16,23 @@ jobs:
       with:
         terraform_version: 1.11.1
 
-    - name: Write GCP credentials
-      run: |
-        echo "${{ secrets.GCP_CREDENTIALS }}" > terraform/gcp-key.json
-
-    - name: Terraform Init
+    - name: Init Terraform
       working-directory: ./terraform
       run: terraform init
 
     - name: Apply Terraform
       working-directory: ./terraform
-      run: |
-        terraform apply -auto-approve \
-          -var="google_credentials=${{ secrets.GCP_CREDENTIALS }}" \
-          -var="gcp_project=${{ secrets.GCP_PROJECT }}" \
+      run: terraform apply -auto-approve \
+        -var='google_credentials=${{ secrets.GCP_CREDENTIALS }}' \
+        -var='gcp_project=${{ secrets.GCP_PROJECT }}'
 
-    - name: Wait 2 minutes before destroy
+    - name: Wait 2 minutes before destroying
       run: |
         echo "⏳ Attente de 2 minutes avant destruction..."
         sleep 120
 
-    - name: Terraform Destroy
+    - name: Destroy Terraform resources
       working-directory: ./terraform
       run: terraform destroy -auto-approve \
-        -var="google_credentials=../gcp-key.json" \
-        -var="gcp_project=${{ secrets.GCP_PROJECT }}"
+        -var='google_credentials=${{ secrets.GCP_CREDENTIALS }}' \
+        -var='gcp_project=${{ secrets.GCP_PROJECT }}'
