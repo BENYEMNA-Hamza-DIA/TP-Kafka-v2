@@ -36,7 +36,8 @@ variable "gcp_region" {
 variable "gcp_zone" {
   description = "GCP zone for the VM"
   type        = string
-  default     = "europe-west9-a"
+  default     = "europe-west1-b"
+# europe-west9-a = France / europe-west1-b = Belgique
 }
 
 variable "vm_name" {
