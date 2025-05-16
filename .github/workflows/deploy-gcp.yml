@@ -38,7 +38,7 @@ jobs:
           terraform apply -auto-approve \
             -var="google_credentials=${{ secrets.GCP_CREDENTIALS }}" \
             -var="gcp_project=${{ secrets.GCP_PROJECT }}" \
-            -var="ssh_pub_key=${{ steps.generate_ssh.outputs.ssh_pub }}"
+            -var="ssh_pub_key=${{ steps.generate_ssh.outputs.public_key }}"
 
 
       - name: Get external IP from Terraform
