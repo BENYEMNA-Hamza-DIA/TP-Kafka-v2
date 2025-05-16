@@ -39,7 +39,7 @@ Une architecture orientée événements repose sur la production, la détection 
 
 ## 📅 Kafka : principes fondamentaux
 
-![Kafka principles] (images/Kafka schema.gif)
+![Kafka principles] (images/kafka-schema.gif)
 
 Apache Kafka est une plateforme de streaming d'événements distribuée. Elle repose sur un modèle **pub/sub** avec les éléments suivants :
 
@@ -58,7 +58,7 @@ Apache Kafka est une plateforme de streaming d'événements distribuée. Elle re
 
 ### 🏛️ Use cases
 
-![Top 5 Kafka Uses Cases] (images/Top 5 Kafka uses.webp)
+![Top 5 Kafka Uses Cases] (images/top-5-kafka-uses.webp)
 
 * Monitoring d'applications
 * Streaming de données IoT
