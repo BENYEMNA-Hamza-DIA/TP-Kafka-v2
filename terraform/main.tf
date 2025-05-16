@@ -37,13 +37,15 @@ resource "google_compute_firewall" "allow_kafka_services" {
 
   source_ranges = ["0.0.0.0/0"]
 
-  lifecycle {
-    prevent_destroy = true
-    ignore_changes  = [
-      allow,
-      source_ranges,
-    ]
-  }
+# Empeche la destruction de l'instance firewall
+ #lifecycle {
+   
+   #prevent_destroy = true
+ #  ignore_changes  = [
+ #    allow,
+ #    source_ranges,
+ #  ]
+ #}
 }
 
 
