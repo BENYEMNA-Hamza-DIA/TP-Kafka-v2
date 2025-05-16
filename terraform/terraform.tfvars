@@ -1,5 +1,9 @@
-google_credentials = "~/.gcp/terraform-key.json"
-gcp_project       = "lab-kafka"
+## Deploiement local
+##
+#google_credentials = "~/.gcp/terraform-key.json"
+#gcp_project       = "lab-kafka"
+##
+
 gcp_region        = "europe-west9"
 gcp_zone          = "europe-west9-a"
 vm_name           = "kafka-instance"
