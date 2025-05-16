@@ -10,7 +10,7 @@ terraform {
 ## Déploiement sur Github Actions
 ##
 provider "google" {
-  credentials = var.google_credentials
+  credentials = file("${path.module}/gcp-key.json")
   project     = var.gcp_project
   region      = var.gcp_region
 }
