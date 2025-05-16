@@ -30,8 +30,6 @@ jobs:
         terraform apply -auto-approve \
           -var="google_credentials=${{ secrets.GCP_CREDENTIALS }}" \
           -var="gcp_project=${{ secrets.GCP_PROJECT }}" \
-          -var="gcp_region=${{ secrets.GCP_REGION }}" \
-          -var="gcp_zone=${{ secrets.GCP_ZONE }}"
 
     - name: Wait 2 minutes before destroy
       run: |
