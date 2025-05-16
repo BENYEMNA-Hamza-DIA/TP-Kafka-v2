@@ -7,11 +7,23 @@ terraform {
   }
 }
 
+## Déploiement local
+##
+#provider "google" {
+#  credentials = file(var.google_credentials)
+#  project     = var.gcp_project
+#  region      = var.gcp_region
+#}
+##
+
+##Deploiement avec Github Action
+##
 provider "google" {
-  credentials = file(var.google_credentials)
+  credentials = file(local.credentials_file_path)
   project     = var.gcp_project
   region      = var.gcp_region
 }
+##
 
 
 resource "google_compute_firewall" "allow_kafka_services" {

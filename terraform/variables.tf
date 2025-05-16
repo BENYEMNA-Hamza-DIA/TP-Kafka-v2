@@ -1,7 +1,26 @@
+## Déploiement sans Github Action
+#variable "google_credentials" {
+#  description = "Path to the GCP credentials JSON file"
+#  type        = string
+#}
+##
+
+## Deploiement avec Github Action
+##
 variable "google_credentials" {
-  description = "Path to the GCP credentials JSON file"
+  description = "GCP credentials JSON"
   type        = string
 }
+
+locals {
+  credentials_file_path = "${path.module}/gcp-key.json"
+}
+
+resource "local_file" "gcp_key" {
+  content  = var.google_credentials
+  filename = local.credentials_file_path
+}
+##
 
 variable "gcp_project" {
   description = "GCP Project ID"

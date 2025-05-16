@@ -1,0 +1,46 @@
+name: Deploy and Destroy Kafka VM on GCP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy_destroy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.11.1
+
+    - name: Write GCP credentials
+      run: |
+        echo "${{ secrets.GCP_CREDENTIALS }}" > gcp-key.json
+
+    - name: Init Terraform
+      working-directory: ./terraform
+      run: terraform init
+
+    - name: Apply Terraform
+      working-directory: ./terraform
+      run: terraform apply -auto-approve \
+        -var="google_credentials=../gcp-key.json" \
+        -var="gcp_project=${{ secrets.GCP_PROJECT }}" \
+        -var="gcp_region=${{ secrets.GCP_REGION }}" \
+        -var="gcp_zone=${{ secrets.GCP_ZONE }}"
+
+    - name: Wait 2 minutes before destroying
+      run: |
+        echo "⏳ Attente de 2 minutes avant suppression..."
+        sleep 120
+
+    - name: Destroy Terraform resources
+      working-directory: ./terraform
+      run: terraform destroy -auto-approve \
+        -var="google_credentials=../gcp-key.json" \
+        -var="gcp_project=${{ secrets.GCP_PROJECT }}" \
+        -var="gcp_region=${{ secrets.GCP_REGION }}" \
+        -var="gcp_zone=${{ secrets.GCP_ZONE }}"
