@@ -17,7 +17,8 @@ jobs:
         terraform_version: 1.11.1
 
     - name: Write GCP credentials
-      run: echo "${{ secrets.GCP_CREDENTIALS }}" > gcp-key.json
+      run: |
+        echo "${{ secrets.GCP_CREDENTIALS }}" > terraform/gcp-key.json
 
     - name: Terraform Init
       working-directory: ./terraform
