@@ -2,156 +2,158 @@
 
 ## 🏆 Goal of the Training
 
-Ce hands-on a pour but de déployer un cluster Kafka complet sur GCP via Terraform, avec producteurs, topics, messages et groupes de consommateurs. Ce TP vous permettra de comprendre le fonctionnement interne de Kafka et les avantages des architectures event-driven.
+This hands-on training is designed to help you deeply understand the inner workings of Apache Kafka and the benefits of event-driven architectures by deploying a complete Kafka cluster on Google Cloud Platform (GCP) using Terraform. You will simulate message streaming with producers, topics, consumer groups, and explore the system’s fault tolerance via monitoring tools.
 
 ---
 
-## 📀 Introduction : Event-Driven Architecture (EDA)
+## 📀 Introduction: Event-Driven Architecture (EDA)
 
-### ⚖️ Principe
+### ⚙️ What is Event-Driven Architecture?
 
-Une architecture orientée événements repose sur la production, la détection et la réaction à des événements. Les services communiquent en échangeant des messages plutôt qu'en faisant des requêtes directes.
+Event-Driven Architecture is a software design paradigm in which components of a system communicate by producing and reacting to events. Instead of making direct calls between services (as in API-based designs), services emit events to a central broker and other services subscribe to those events. This decouples components, enabling flexibility and scalability.
 
-### ✨ Avantages
+### ⚡ Key Concepts:
 
-* Découplage fort entre les services
-* Haute scalabilité
-* Temps réel
-* Extensibilité facilitée
+* **Event:** A change of state or an occurrence that is significant in a system (e.g., a new order placed).
+* **Producer:** Emits an event when an action happens.
+* **Consumer:** Reacts to the event.
+* **Event Broker:** Routes events from producers to consumers (Kafka, RabbitMQ, etc).
 
-### 🏛️ Use cases
+### ✨ Benefits of EDA:
 
-* Traitement de logs
-* Monitoring en temps réel
-* Applications bancaires (transactions)
-* Intégration de microservices
+* **Loose coupling:** Services don’t need to know about each other.
+* **Asynchronous processing:** Enables real-time data pipelines.
+* **Scalability:** Each component can scale independently.
+* **Flexibility:** Easier to plug in new components or logic.
 
-### 🌍 Comparaison avec API REST
+### 🏛️ Use Cases:
 
-| Aspect      | API REST          | Event-driven           |
-| ----------- | ----------------- | ---------------------- |
-| Couplage    | Fort              | Faible                 |
-| Mode        | Pull              | Push                   |
-| Réactivité  | Séquentiel        | Asynchrone             |
-| Scalabilité | Limitee par appel | Forte grâce à la queue |
+* Fraud detection in banking
+* IoT telemetry and real-time analytics
+* Microservices communication
+* Monitoring and log aggregation
 
----
+### 🌐 EDA vs. REST APIs:
 
-## 📅 Kafka : principes fondamentaux
-
-![Kafka principles] (images/kafka-schema.gif)
-
-Apache Kafka est une plateforme de streaming d'événements distribuée. Elle repose sur un modèle **pub/sub** avec les éléments suivants :
-
-* **Producteurs** : envoient des messages vers un **topic**
-* **Topics** : unité logique qui regroupe les messages
-* **Brokers** : serveurs qui stockent et distribuent les messages
-* **Consumers** : abonnés qui consomment les messages
-* **Consumer Groups** : ensemble de consumers qui partagent la consommation d'un topic
-
-### ✨ Avantages
-
-* Tolérance aux pannes (grâce à la réplication)
-* Scalabilité horizontale
-* Performances élevées
-* Persistance des messages
-
-### 🏛️ Use cases
-
-![Top 5 Kafka Uses Cases] (images/top-5-kafka-uses.webp)
-
-* Monitoring d'applications
-* Streaming de données IoT
-* Intégration entre microservices
-* ETL en temps réel
+| Aspect      | REST API                     | Event-Driven Architecture  |
+| ----------- | ---------------------------- | -------------------------- |
+| Coupling    | Tight (synchronous call)     | Loose (asynchronous event) |
+| Flow        | Request/Response             | Publish/Subscribe          |
+| Scalability | Limited to synchronous calls | Horizontally scalable      |
+| Latency     | Higher under load            | Lower, real-time reaction  |
 
 ---
 
-## 📚 Objectif du TP
+## 📅 Kafka: Core Concepts and Architecture
 
-Le TP consiste à :
+!\[Kafka Principles]\(images/kafka-schema.gif)
 
-* Déployer une instance GCP automatiquement avec **Terraform**
-* Configurer cette instance pour exécuter un cluster Kafka via **Docker Compose**
-* Simuler un flux de messages entre producteurs et consommateurs
-* Visualiser l'état du cluster via un monitoring **Prometheus + Grafana**
-* Simuler une panne et vérifier la résilience de Kafka
+Apache Kafka is a distributed event streaming platform that enables real-time ingestion and processing of large volumes of data. It works on a publish-subscribe model and is designed for high throughput and low latency.
 
-### 📘 Schéma d’architecture
+### 🔄 Components of Kafka:
 
-![TP Kafka deployment architecture] (images/kafka-cluster-running.png)
+* **Producer:** Sends data (events) to Kafka topics.
+* **Topics:** Logical channels that group messages.
+* **Partitions:** Each topic is split into partitions to allow parallelism and scalability.
+* **Broker:** A Kafka server that stores data and serves clients.
+* **Consumer:** Subscribes to topics to consume messages.
+* **Consumer Group:** A group of consumers that share load and coordinate consumption.
 
-## 🛠️ Déroulement du TP
+### ✨ Key Benefits:
 
-### 🔁 1. Lancement du pipeline GitHub Actions
+* **Fault-tolerance:** Replication ensures data durability.
+* **Scalability:** Easily scaled horizontally.
+* **Durability:** Kafka retains messages even after consumption.
+* **High performance:** Can handle millions of messages per second.
 
-Le pipeline est déclenché via GitHub Actions (workflow\_dispatch).
+### 🏛️ Real-World Use Cases:
 
-#### 🔹 Étapes :
+!\[Top 5 Kafka Uses Cases]\(images/top-5-kafka-uses.webp)
 
-* **Terraform Apply** : déploie une instance GCP Debian
-* **Configuration VM** : mise à jour, installation de git et git clone du projet
-* **Provisioning** : installation de Java, Docker, Docker Compose
-* **Exécution** :
+* Log aggregation
+* User activity tracking
+* Stream processing
+* Event sourcing
+* IoT device telemetry
 
-  * Lancement du cluster Kafka (3 brokers)
-  * HAProxy pour distribuer les requêtes
-  * Prometheus + Grafana pour le monitoring
+---
 
-### 🔦 2. Envoi et consommation de messages
+## 📚 Goal of the Lab
 
-* 3 producteurs envoient des messages
-* 3 topics sont créés
-* 3 consumer groups consomment :
+In this lab, you will:
+
+* Automatically deploy a GCP virtual machine using Terraform.
+* Configure the VM to run a Docker-based Kafka cluster.
+* Produce and consume messages across multiple topics.
+* Monitor Kafka using Prometheus and Grafana.
+* Simulate a Kafka broker failure and observe system resilience.
+
+---
+
+## 📘 Architecture Diagram
+
+![Kafka Cluster Architecture](images/kafka-cluster-running.png)
+
+### 🧠 What this setup demonstrates:
+
+* **3 Kafka brokers** running in containers
+* **3 consumer groups** with increasing consumer count (1, 2, and 3)
+* **3 producers** sending messages simultaneously
+* **Load balancing and failover** via HAProxy
+* **Real-time metrics** displayed on Grafana
+
+---
+
+## 🛠️ Lab Instructions
+
+### 🔁 Step 1: Launch GitHub Actions Pipeline
+
+The workflow is triggered manually using the `workflow_dispatch` GitHub Action.
+
+#### 🔹 What it does:
+
+* Uses Terraform to deploy a Debian VM on GCP
+* Connects to the VM to install Git, clone the repo, and install Java, Docker, Docker Compose
+* Starts the Kafka ecosystem including Kafka cluster, HAProxy, and monitoring stack
+
+### 📨 Step 2: Messaging Simulation
+
+* **3 producers** send messages to unique topics
+* **3 topics** are dynamically created
+* **3 consumer groups** with:
 
   * Group 1: 1 consumer
   * Group 2: 2 consumers
   * Group 3: 3 consumers
 
-### ❄️ 3. Simulation de panne
+Consumers are automatically subscribed to appropriate topics and start processing messages.
 
-* Un broker Kafka est stoppé manuellement
-* Le monitoring Grafana indique l'état du cluster (2/3 brokers actifs)
-* La consommation des messages continue sans erreur : preuve de résilience
+### ❄️ Step 3: Simulating a Kafka Broker Failure
 
----
+Manually shut down one broker container.
 
-## 🎭 Illustrations (ajouter les images/gif)
+#### ✅ What to observe:
 
-### ✅ Kafka running on GCP
+* Grafana dashboard shows **2/3 brokers active**
+* Consumers **continue to process messages** from the remaining brokers
+* Demonstrates Kafka’s **fault tolerance and high availability**
 
-![Kafka Cluster Running](images/kafka-cluster-running.png)
-
-### ✅ Grafana Dashboard
-
-![Grafana Monitoring](images/grafana-dashboard.png)
-
-### ❌ Simulated Broker Failure
-
-![Kafka Broker Down](images/broker-down.gif)
-
-### ✅ Message Flow
-
-![Message Flow](images/message-flow.gif)
 
 ---
 
 ## 🎉 Conclusion
 
-Vous avez :
+By completing this lab, you:
+✅ Deployed a Kafka cluster on GCP using Terraform
+✅ Built an end-to-end event-driven architecture
+✅ Simulated a real-world fault and validated system resilience
+✅ Monitored Kafka’s health in real time via Grafana
 
-* Déployé un cluster Kafka automatiquement avec Terraform
-* Mis en place une architecture event-driven
-* Observé le comportement en cas de panne
-* Monitoré l'activité grâce à Prometheus + Grafana
+### ✨ Want to go further?
 
-### ✨ Prolongements possibles :
+* Use Kafka Connect for database integration
+* Add Kafka Streams for stream transformations
+* Deploy the stack to Kubernetes
+* Integrate Kafka with a full-scale microservice ecosystem
 
-* Ajouter Kafka Connect pour intégration de base de données
-* Utiliser Kafka Streams pour le traitement temps réel
-* Déployer sur Kubernetes
-* Intégrer avec un SI existant
-
----
-
-Merci pour votre participation à cette formation Kafka ✨
+> Thanks for participating in this Kafka training! 🚀
